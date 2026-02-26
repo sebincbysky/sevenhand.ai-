@@ -4,9 +4,9 @@
 
 # Run and deploy the app
 
-This contains everything you need to run your app locally.
 
-we recommend netlify and  vercel
+
+we recommend netlify.com and  vercel.com
 
 
 
