@@ -8,6 +8,9 @@ export const useHandTracking = (webcamRef: React.RefObject<Webcam | null>, isEna
   const handLandmarkerRef = useRef<HandLandmarker | null>(null);
   const requestRef = useRef<number>();
   const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number } | null>(null);
+  const [landmarks, setLandmarks] = useState<any[] | null>(null);
+  const [isClicking, setIsClicking] = useState(false);
+  
   const lastPosRef = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
@@ -49,7 +52,20 @@ export const useHandTracking = (webcamRef: React.RefObject<Webcam | null>, isEna
           try {
              const results = handLandmarkerRef.current.detectForVideo(video, performance.now());
              if (results.landmarks && results.landmarks.length > 0) {
-               const indexTip = results.landmarks[0][8];
+               const handLandmarks = results.landmarks[0];
+               setLandmarks(handLandmarks);
+               
+               const indexTip = handLandmarks[8];
+               const thumbTip = handLandmarks[4];
+               
+               // Calculate distance between thumb and index finger for "pinch" (click)
+               const dxPinch = indexTip.x - thumbTip.x;
+               const dyPinch = indexTip.y - thumbTip.y;
+               const distance = Math.sqrt(dxPinch * dxPinch + dyPinch * dyPinch);
+               
+               // If distance is small, it's a pinch/click
+               setIsClicking(distance < 0.05);
+
                const rawX = (1 - indexTip.x) * window.innerWidth; 
                const rawY = indexTip.y * window.innerHeight;
 
@@ -66,9 +82,8 @@ export const useHandTracking = (webcamRef: React.RefObject<Webcam | null>, isEna
                lastPosRef.current = { x: finalX, y: finalY };
                setCursorPosition({ x: finalX, y: finalY });
              } else {
-               // Optional: clear cursor if hand lost, or keep last position
-               // setCursorPosition(null);
-               // lastPosRef.current = null;
+               setLandmarks(null);
+               setIsClicking(false);
              }
           } catch (e) {
              // Ignore transient errors
@@ -76,6 +91,8 @@ export const useHandTracking = (webcamRef: React.RefObject<Webcam | null>, isEna
        }
     } else if (!isEnabled) {
        setCursorPosition(null);
+       setLandmarks(null);
+       setIsClicking(false);
        lastPosRef.current = null;
     }
     
@@ -91,5 +108,5 @@ export const useHandTracking = (webcamRef: React.RefObject<Webcam | null>, isEna
     };
   }, [isReady, isEnabled]);
 
-  return { isReady, error, cursorPosition };
+  return { isReady, error, cursorPosition, landmarks, isClicking };
 };

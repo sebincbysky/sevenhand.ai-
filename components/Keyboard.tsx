@@ -13,6 +13,9 @@ interface KeyboardProps {
   dwellTimeMs: number;
   hoverColor?: string;
   actionLabel?: string;
+  suggestions?: string[];
+  onSuggestionClick?: (sug: string) => void;
+  isClicking?: boolean;
 }
 
 export const KEYS: KeyConfig[][] = [
@@ -41,13 +44,14 @@ export const KEYS: KeyConfig[][] = [
   ]
 ];
 
-export const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, cursorPos, dwellTimeMs, hoverColor = '#000000', actionLabel = "SPEAK" }) => {
+export const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, cursorPos, dwellTimeMs, hoverColor = '#000000', actionLabel = "SPEAK", suggestions = [], onSuggestionClick, isClicking = false }) => {
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const startTimeRef = useRef<number | null>(null);
   const lastKeyRef = useRef<string | null>(null);
   const animationFrameRef = useRef<number>();
   const justTypedRef = useRef<boolean>(false);
+  const prevIsClickingRef = useRef<boolean>(false);
 
   useEffect(() => {
     const checkHover = () => {
@@ -56,6 +60,7 @@ export const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, cursorPos, dwell
         setProgress(0);
         startTimeRef.current = null;
         justTypedRef.current = false;
+        prevIsClickingRef.current = isClicking;
         return;
       }
 
@@ -64,6 +69,20 @@ export const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, cursorPos, dwell
 
       if (keyButton) {
         const keyValue = keyButton.dataset.keyValue;
+        
+        // Handle instant click
+        if (isClicking && !prevIsClickingRef.current && !justTypedRef.current && keyValue) {
+          if (keyValue.startsWith('SUG_')) {
+            const idx = parseInt(keyValue.replace('SUG_', ''));
+            if (suggestions && suggestions[idx] && onSuggestionClick) {
+              onSuggestionClick(suggestions[idx]);
+            }
+          } else {
+            onKeyPress(keyValue);
+          }
+          justTypedRef.current = true;
+          setProgress(100);
+        }
         
         if (keyValue !== lastKeyRef.current) {
           lastKeyRef.current = keyValue || null;
@@ -77,7 +96,16 @@ export const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, cursorPos, dwell
           setProgress(newProgress);
 
           if (newProgress >= 100) {
-             if (keyValue) onKeyPress(keyValue);
+             if (keyValue) {
+               if (keyValue.startsWith('SUG_')) {
+                 const idx = parseInt(keyValue.replace('SUG_', ''));
+                 if (suggestions && suggestions[idx] && onSuggestionClick) {
+                   onSuggestionClick(suggestions[idx]);
+                 }
+               } else {
+                 onKeyPress(keyValue);
+               }
+             }
              justTypedRef.current = true;
              setProgress(100);
           }
@@ -91,6 +119,8 @@ export const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, cursorPos, dwell
             justTypedRef.current = false;
         }
       }
+      
+      prevIsClickingRef.current = isClicking;
       animationFrameRef.current = requestAnimationFrame(checkHover);
     };
 
@@ -98,10 +128,47 @@ export const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, cursorPos, dwell
     return () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
-  }, [cursorPos, dwellTimeMs, onKeyPress]);
+  }, [cursorPos, dwellTimeMs, onKeyPress, suggestions, onSuggestionClick, isClicking]);
 
   return (
     <div className="flex flex-col gap-2 w-full max-w-5xl mx-auto p-4 select-none">
+      {suggestions && suggestions.length > 0 && (
+        <div className="flex gap-2 justify-center w-full mb-2">
+          {suggestions.map((sug, i) => {
+            const keyVal = `SUG_${i}`;
+            const isHovered = hoveredKey === keyVal;
+            const secondsRemaining = Math.max(0, Math.ceil((dwellTimeMs - (progress / 100) * dwellTimeMs) / 1000));
+            return (
+              <div
+                key={keyVal}
+                data-key-value={keyVal}
+                style={{ 
+                  flex: `1 1 0`,
+                  backgroundColor: isHovered ? hoverColor : 'white',
+                  color: isHovered ? (hoverColor === '#000000' ? 'white' : 'black') : 'black'
+                }}
+                className={`
+                  relative h-10 md:h-14 rounded-2xl flex items-center justify-center
+                  text-sm md:text-base font-medium transition-all duration-150 ease-out overflow-hidden
+                  border border-zinc-200
+                  ${isHovered ? 'scale-[1.02] z-10 shadow-md border-zinc-300' : 'shadow-sm hover:shadow-md'}
+                `}
+              >
+                <div 
+                    className={`absolute bottom-0 left-0 w-full transition-all duration-75 ease-linear ${isHovered ? 'bg-zinc-900/10' : 'bg-transparent'}`}
+                    style={{ height: isHovered ? `${progress}%` : '0%' }}
+                />
+                <span className="relative z-10 flex flex-col items-center">
+                  {sug}
+                  {isHovered && progress > 0 && progress < 100 && dwellTimeMs < 10000 && (
+                    <span className="text-[10px] absolute -bottom-4 font-mono text-zinc-500">{secondsRemaining}s</span>
+                  )}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
       {KEYS.map((row, rowIndex) => (
         <div key={rowIndex} className="flex gap-2 justify-center w-full">
           {row.map((key) => {
@@ -122,21 +189,21 @@ export const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, cursorPos, dwell
                   color: isHovered ? (hoverColor === '#000000' ? 'white' : 'black') : 'black'
                 }}
                 className={`
-                  relative h-14 md:h-20 rounded-none flex items-center justify-center
-                  text-xl md:text-2xl font-semibold transition-all duration-150 ease-out overflow-hidden
-                  border-2 border-black
-                  ${isHovered ? 'scale-[1.02] z-10 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'shadow-sm'}
-                  ${isAction ? 'text-base font-bold uppercase tracking-wider' : ''}
+                  relative h-14 md:h-20 rounded-2xl flex items-center justify-center
+                  text-xl md:text-2xl font-medium transition-all duration-150 ease-out overflow-hidden
+                  border border-zinc-200
+                  ${isHovered ? 'scale-[1.02] z-10 shadow-md border-zinc-300' : 'shadow-sm hover:shadow-md'}
+                  ${isAction ? 'text-sm font-semibold uppercase tracking-wider text-zinc-600' : ''}
                 `}
               >
                 <div 
-                    className={`absolute bottom-0 left-0 w-full transition-all duration-75 ease-linear ${isHovered ? 'bg-white/30' : 'bg-black/10'}`}
+                    className={`absolute bottom-0 left-0 w-full transition-all duration-75 ease-linear ${isHovered ? 'bg-zinc-900/10' : 'bg-transparent'}`}
                     style={{ height: isHovered ? `${progress}%` : '0%' }}
                 />
                 <span className="relative z-10 flex flex-col items-center">
                   {displayLabel}
-                  {isHovered && progress > 0 && progress < 100 && (
-                    <span className="text-[10px] absolute -bottom-4 font-mono opacity-80">{secondsRemaining}s</span>
+                  {isHovered && progress > 0 && progress < 100 && dwellTimeMs < 10000 && (
+                    <span className="text-[10px] absolute -bottom-5 font-mono text-zinc-500">{secondsRemaining}s</span>
                   )}
                 </span>
               </div>

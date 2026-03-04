@@ -1,6 +1,6 @@
 {
   "name": "sevenhand.ai",
-  "description": "A hand-tracking accessibility keyboard powered by Gemini AI.",
+  "description": "A hand-tracking accessibility keyboard powered by Flick AI.",
   "requestFramePermissions": [
     "camera",
     "microphone"
