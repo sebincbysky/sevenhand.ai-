@@ -149,13 +149,13 @@ export const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, cursorPos, dwell
                 }}
                 className={`
                   relative h-10 md:h-14 rounded-2xl flex items-center justify-center
-                  text-sm md:text-base font-medium transition-all duration-150 ease-out overflow-hidden
+                  text-sm md:text-base font-medium transition-all duration-300 ease-out overflow-hidden
                   border border-zinc-200
                   ${isHovered ? 'scale-[1.02] z-10 shadow-md border-zinc-300' : 'shadow-sm hover:shadow-md'}
                 `}
               >
                 <div 
-                    className={`absolute bottom-0 left-0 w-full transition-all duration-75 ease-linear ${isHovered ? 'bg-zinc-900/10' : 'bg-transparent'}`}
+                    className={`absolute bottom-0 left-0 w-full transition-all duration-300 ease-out ${isHovered ? 'bg-zinc-900/10' : 'bg-transparent'}`}
                     style={{ height: isHovered ? `${progress}%` : '0%' }}
                 />
                 <span className="relative z-10 flex flex-col items-center">
@@ -190,14 +190,14 @@ export const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, cursorPos, dwell
                 }}
                 className={`
                   relative h-14 md:h-20 rounded-2xl flex items-center justify-center
-                  text-xl md:text-2xl font-medium transition-all duration-150 ease-out overflow-hidden
+                  text-xl md:text-2xl font-medium transition-all duration-300 ease-out overflow-hidden
                   border border-zinc-200
                   ${isHovered ? 'scale-[1.02] z-10 shadow-md border-zinc-300' : 'shadow-sm hover:shadow-md'}
                   ${isAction ? 'text-sm font-semibold uppercase tracking-wider text-zinc-600' : ''}
                 `}
               >
                 <div 
-                    className={`absolute bottom-0 left-0 w-full transition-all duration-75 ease-linear ${isHovered ? 'bg-zinc-900/10' : 'bg-transparent'}`}
+                    className={`absolute bottom-0 left-0 w-full transition-all duration-300 ease-out ${isHovered ? 'bg-zinc-900/10' : 'bg-transparent'}`}
                     style={{ height: isHovered ? `${progress}%` : '0%' }}
                 />
                 <span className="relative z-10 flex flex-col items-center">

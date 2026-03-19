@@ -196,7 +196,7 @@ export const KeyboardApp: React.FC = () => {
               stroke={hand.isClicking ? "#ef4444" : "#000000"} 
               strokeWidth="4"
               strokeLinecap="round"
-              className="transition-colors duration-150"
+              className="transition-colors duration-500 ease-out"
             />
           );
         })}
@@ -210,7 +210,7 @@ export const KeyboardApp: React.FC = () => {
               fill={hand.isClicking ? "#ef4444" : "#ffffff"}
               stroke="#000000"
               strokeWidth="2"
-              className="transition-colors duration-150"
+              className="transition-colors duration-500 ease-out"
             />
           );
         })}
@@ -233,7 +233,7 @@ export const KeyboardApp: React.FC = () => {
             onMouseLeave={() => setShowTrackingDropdown(false)}
           >
             <button 
-              className="px-4 py-2 font-medium text-sm border border-zinc-200 rounded-full hover:bg-zinc-50 hover:text-zinc-900 transition-all shadow-sm flex items-center gap-2 text-zinc-700"
+              className="px-4 py-2 font-medium text-sm border border-zinc-200 rounded-full hover:bg-zinc-50 hover:text-zinc-900 transition-all duration-500 ease-out shadow-sm flex items-center gap-2 text-zinc-700"
             >
               {trackingMode === 'hand' && <><Hand className="w-4 h-4" /> Hand Tracking</>}
               {trackingMode === 'head' && <><User className="w-4 h-4" /> Head Tracking</>}
@@ -245,19 +245,19 @@ export const KeyboardApp: React.FC = () => {
               <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-zinc-200 rounded-2xl shadow-lg py-2 z-50 flex flex-col">
                 <button 
                   onClick={() => setTrackingMode('hand')}
-                  className={`px-4 py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 transition-colors ${trackingMode === 'hand' ? 'font-semibold text-zinc-900' : 'text-zinc-600'}`}
+                  className={`px-4 py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 transition-colors duration-500 ease-out ${trackingMode === 'hand' ? 'font-semibold text-zinc-900' : 'text-zinc-600'}`}
                 >
                   <Hand className="w-4 h-4" /> Hand Tracking
                 </button>
                 <button 
                   onClick={() => setTrackingMode('head')}
-                  className={`px-4 py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 transition-colors ${trackingMode === 'head' ? 'font-semibold text-zinc-900' : 'text-zinc-600'}`}
+                  className={`px-4 py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 transition-colors duration-500 ease-out ${trackingMode === 'head' ? 'font-semibold text-zinc-900' : 'text-zinc-600'}`}
                 >
                   <User className="w-4 h-4" /> Head Tracking
                 </button>
                 <button 
                   onClick={() => setTrackingMode('red-light')}
-                  className={`px-4 py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 transition-colors ${trackingMode === 'red-light' ? 'font-semibold text-zinc-900' : 'text-zinc-600'}`}
+                  className={`px-4 py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 transition-colors duration-500 ease-out ${trackingMode === 'red-light' ? 'font-semibold text-zinc-900' : 'text-zinc-600'}`}
                 >
                   <Radio className="w-4 h-4" /> Next Link
                 </button>
@@ -267,14 +267,14 @@ export const KeyboardApp: React.FC = () => {
 
           <button 
             onClick={() => setIsCameraOn(prev => !prev)}
-            className={`px-4 py-2 font-medium text-sm border border-zinc-200 rounded-full transition-all shadow-sm flex items-center gap-2 ${!isCameraOn ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'hover:bg-zinc-50 text-zinc-700'}`}
+            className={`px-4 py-2 font-medium text-sm border border-zinc-200 rounded-full transition-all duration-500 ease-out shadow-sm flex items-center gap-2 ${!isCameraOn ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' : 'hover:bg-zinc-50 text-zinc-700'}`}
           >
             {isCameraOn ? <Camera className="w-4 h-4" /> : <VideoOff className="w-4 h-4" />}
             {isCameraOn ? 'Tracking On' : 'Tracking Off'}
           </button>
           <button 
             onClick={() => setShowSettings(true)}
-            className="p-2 border border-zinc-200 rounded-full hover:bg-zinc-50 text-zinc-700 transition-all shadow-sm"
+            className="p-2 border border-zinc-200 rounded-full hover:bg-zinc-50 text-zinc-700 transition-all duration-500 ease-out shadow-sm"
           >
             <Settings className="w-5 h-5" />
           </button>
@@ -283,7 +283,7 @@ export const KeyboardApp: React.FC = () => {
               localStorage.removeItem('7h_user');
               navigate('/');
             }}
-            className="p-2 border border-zinc-200 rounded-full hover:bg-zinc-50 text-zinc-700 transition-all shadow-sm"
+            className="p-2 border border-zinc-200 rounded-full hover:bg-zinc-50 text-zinc-700 transition-all duration-500 ease-out shadow-sm"
           >
             <LogOut className="w-5 h-5" />
           </button>
@@ -295,7 +295,7 @@ export const KeyboardApp: React.FC = () => {
         
         {isCameraOn && trackingMode === 'red-light' && (
           <div className="w-full max-w-5xl flex flex-col gap-2">
-            <div className={`w-full p-4 text-center font-medium rounded-2xl border border-zinc-200 transition-colors shadow-sm ${redLight.isConnected ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-500'}`}>
+            <div className={`w-full p-4 text-center font-medium rounded-2xl border border-zinc-200 transition-colors duration-500 ease-out shadow-sm ${redLight.isConnected ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-500'}`}>
               <span className="flex items-center justify-center gap-3">
                 <div className={`w-3 h-3 rounded-full ${redLight.isConnected ? 'bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'bg-zinc-300'}`}></div>
                 {redLight.isConnected ? 'Next Link is Enabled' : 'Next Link is Disabled'}
@@ -306,12 +306,12 @@ export const KeyboardApp: React.FC = () => {
 
         {/* Output Display */}
         <div className="w-full max-w-5xl relative">
-             <div className={`relative bg-white border border-zinc-200 p-8 rounded-3xl min-h-[160px] flex flex-col justify-between shadow-sm transition-all ${isSpeaking ? 'bg-zinc-900 text-white border-zinc-800' : ''}`}>
+             <div className={`relative bg-white border border-zinc-200 p-8 rounded-3xl min-h-[160px] flex flex-col justify-between shadow-sm transition-all duration-500 ease-out ${isSpeaking ? 'bg-zinc-900 text-white border-zinc-800' : ''}`}>
                 <textarea 
                   value={text}
                   readOnly 
                   placeholder={isCameraOn ? "Hover over keys to type..." : "Camera disabled. Turn on to track."}
-                  className={`w-full bg-transparent text-4xl md:text-5xl font-medium placeholder-zinc-300 resize-none outline-none h-32 leading-tight ${isSpeaking ? 'text-white placeholder-zinc-600' : 'text-zinc-900'}`}
+                  className={`w-full bg-transparent text-4xl md:text-5xl font-medium placeholder-zinc-300 resize-none outline-none h-32 leading-tight transition-colors duration-500 ease-out ${isSpeaking ? 'text-white placeholder-zinc-600' : 'text-zinc-900'}`}
                 />
                 <div className={`flex justify-between items-center pt-6 border-t ${isSpeaking ? 'border-zinc-800' : 'border-zinc-100'}`}>
                     <span className="font-mono text-sm text-zinc-400 font-medium">{text.length} Characters</span>
@@ -323,7 +323,7 @@ export const KeyboardApp: React.FC = () => {
         </div>
 
         {/* Keyboard Area */}
-        <div className={`w-full flex-grow flex items-center transition-opacity duration-300 ${!isCameraOn ? 'opacity-50 pointer-events-none' : ''}`}>
+        <div className={`w-full flex-grow flex items-center transition-opacity duration-500 ease-out ${!isCameraOn ? 'opacity-50 pointer-events-none' : ''}`}>
             <Keyboard 
               onKeyPress={handleKeyPress} 
               cursorPos={activeCursorPosition}
@@ -341,7 +341,7 @@ export const KeyboardApp: React.FC = () => {
       {/* Footer */}
       <footer className="relative z-10 p-6 border-t border-zinc-200 flex justify-center items-center bg-white text-zinc-500 group cursor-default">
         <p className="font-medium text-sm">
-          Made by <span className="text-zinc-900 transition-colors duration-300">SebInc</span>
+          7H.ai
         </p>
       </footer>
 
@@ -376,7 +376,7 @@ export const KeyboardApp: React.FC = () => {
           style={{ left: activeCursorPosition.x, top: activeCursorPosition.y }}
         >
           <div 
-            className={`w-8 h-8 rounded-full border-2 border-white shadow-lg backdrop-blur-sm transition-transform ${isClicking ? 'scale-75' : 'scale-100'}`}
+            className={`w-8 h-8 rounded-full border-2 border-white shadow-lg backdrop-blur-sm transition-transform duration-500 ease-out ${isClicking ? 'scale-75' : 'scale-100'}`}
             style={{ backgroundColor: hoverColor === '#000000' ? '#18181b' : hoverColor }}
           ></div>
           <div className="absolute w-1.5 h-1.5 bg-white rounded-full"></div>
@@ -397,7 +397,7 @@ export const KeyboardApp: React.FC = () => {
                 <div className="flex flex-col gap-2">
                   <button 
                     onClick={() => setTrackingMode('hand')}
-                    className={`p-3 rounded-xl border flex items-center gap-3 transition-all ${trackingMode === 'hand' ? 'border-zinc-900 bg-zinc-50 text-zinc-900' : 'border-zinc-200 text-zinc-500 hover:border-zinc-300'}`}
+                    className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-500 ease-out ${trackingMode === 'hand' ? 'border-zinc-900 bg-zinc-50 text-zinc-900' : 'border-zinc-200 text-zinc-500 hover:border-zinc-300'}`}
                   >
                     <Hand className="w-5 h-5" />
                     <div className="text-left">
@@ -407,7 +407,7 @@ export const KeyboardApp: React.FC = () => {
                   </button>
                   <button 
                     onClick={() => setTrackingMode('head')}
-                    className={`p-3 rounded-xl border flex items-center gap-3 transition-all ${trackingMode === 'head' ? 'border-zinc-900 bg-zinc-50 text-zinc-900' : 'border-zinc-200 text-zinc-500 hover:border-zinc-300'}`}
+                    className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-500 ease-out ${trackingMode === 'head' ? 'border-zinc-900 bg-zinc-50 text-zinc-900' : 'border-zinc-200 text-zinc-500 hover:border-zinc-300'}`}
                   >
                     <User className="w-5 h-5" />
                     <div className="text-left">
@@ -417,7 +417,7 @@ export const KeyboardApp: React.FC = () => {
                   </button>
                   <button 
                     onClick={() => setTrackingMode('red-light')}
-                    className={`p-3 rounded-xl border flex items-center gap-3 transition-all ${trackingMode === 'red-light' ? 'border-zinc-900 bg-zinc-50 text-zinc-900' : 'border-zinc-200 text-zinc-500 hover:border-zinc-300'}`}
+                    className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-500 ease-out ${trackingMode === 'red-light' ? 'border-zinc-900 bg-zinc-50 text-zinc-900' : 'border-zinc-200 text-zinc-500 hover:border-zinc-300'}`}
                   >
                     <Radio className="w-5 h-5" />
                     <div className="text-left">
@@ -434,13 +434,13 @@ export const KeyboardApp: React.FC = () => {
                 <div className="flex gap-2">
                   <button 
                     onClick={() => setTypingMode('normal')}
-                    className={`flex-1 p-3 rounded-xl border transition-all ${typingMode === 'normal' ? 'border-zinc-900 bg-zinc-50 text-zinc-900 font-semibold' : 'border-zinc-200 text-zinc-500 hover:border-zinc-300'}`}
+                    className={`flex-1 p-3 rounded-xl border transition-all duration-500 ease-out ${typingMode === 'normal' ? 'border-zinc-900 bg-zinc-50 text-zinc-900 font-semibold' : 'border-zinc-200 text-zinc-500 hover:border-zinc-300'}`}
                   >
                     Normal (Click)
                   </button>
                   <button 
                     onClick={() => setTypingMode('point-to-type')}
-                    className={`flex-1 p-3 rounded-xl border transition-all ${typingMode === 'point-to-type' ? 'border-zinc-900 bg-zinc-50 text-zinc-900 font-semibold' : 'border-zinc-200 text-zinc-500 hover:border-zinc-300'}`}
+                    className={`flex-1 p-3 rounded-xl border transition-all duration-500 ease-out ${typingMode === 'point-to-type' ? 'border-zinc-900 bg-zinc-50 text-zinc-900 font-semibold' : 'border-zinc-200 text-zinc-500 hover:border-zinc-300'}`}
                   >
                     Point-to-type (Hover)
                   </button>
@@ -469,7 +469,7 @@ export const KeyboardApp: React.FC = () => {
                     <button
                       key={color}
                       onClick={() => setHoverColor(color)}
-                      className={`w-10 h-10 rounded-full border-2 border-white shadow-sm transition-transform ${hoverColor === color ? 'scale-110 ring-2 ring-zinc-900 ring-offset-2' : 'hover:scale-105'}`}
+                      className={`w-10 h-10 rounded-full border-2 border-white shadow-sm transition-transform duration-500 ease-out ${hoverColor === color ? 'scale-110 ring-2 ring-zinc-900 ring-offset-2' : 'hover:scale-105'}`}
                       style={{ backgroundColor: color === '#000000' ? '#18181b' : color }}
                     />
                   ))}
@@ -478,10 +478,10 @@ export const KeyboardApp: React.FC = () => {
 
               {/* More Products */}
               <div className="space-y-3 pt-4 border-t border-zinc-100">
-                <label className="text-sm font-medium text-zinc-600 block">More Products by SebInc</label>
+                <label className="text-sm font-medium text-zinc-600 block">More Products</label>
                 <div className="grid grid-cols-1 gap-2">
                   <button 
-                    className="p-3 rounded-xl border border-zinc-200 text-left hover:border-zinc-300 hover:bg-zinc-50 transition-all flex flex-col gap-1 opacity-50 cursor-not-allowed"
+                    className="p-3 rounded-xl border border-zinc-200 text-left hover:border-zinc-300 hover:bg-zinc-50 transition-all duration-500 ease-out flex flex-col gap-1 opacity-50 cursor-not-allowed"
                   >
                     <span className="font-semibold text-zinc-900 text-sm">Coming Soon</span>
                     <span className="text-xs text-zinc-500">More AI tools</span>
@@ -492,7 +492,7 @@ export const KeyboardApp: React.FC = () => {
 
             <button 
               onClick={() => setShowSettings(false)}
-              className="w-full mt-8 py-3 bg-zinc-900 text-white text-lg font-medium rounded-full hover:bg-zinc-800 transition-colors shadow-sm"
+              className="w-full mt-8 py-3 bg-zinc-900 text-white text-lg font-medium rounded-full hover:bg-zinc-800 transition-colors duration-500 ease-out shadow-sm"
             >
               Done
             </button>
